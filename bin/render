@@ -1,0 +1,26 @@
+#!/usr/bin/env ruby
+
+require 'github/markdown'
+require 'erb'
+
+
+def pages
+  Dir["pages/*.md"]
+end
+
+def body
+  GitHub::Markdown.render_gfm(File.read(@page))
+end
+
+def rendered
+  ERB.new(File.read('layout.html.erb')).result()
+end
+
+def output_file
+  File.basename(@page).gsub(".md",".html")
+end
+
+pages.each do |page|
+  @page = page
+  File.open(output_file, 'w') { |f| f.write rendered }
+end
